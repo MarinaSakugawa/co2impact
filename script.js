@@ -1,54 +1,130 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Views
+    const mainView = document.getElementById('main-view');
+    const resultView = document.getElementById('result-view');
+    const settingsView = document.getElementById('settings-view');
+    const views = { 'main-view': mainView, 'result-view': resultView, 'settings-view': settingsView };
+
+    // Buttons
     const boughtBtn = document.getElementById('bought-btn');
     const refusedBtn = document.getElementById('refused-btn');
-    const resultArea = document.getElementById('result-area');
-    const resultMessage = document.getElementById('result-message');
-    const equivalentMessage = document.getElementById('equivalent-message');
+    const settingsBtn = document.getElementById('settings-btn');
+    const saveGoalBtn = document.getElementById('save-goal-btn');
+    const backBtns = document.querySelectorAll('.back-btn');
+
+    // Data Elements
     const totalCo2El = document.getElementById('total-co2');
+    const goalInput = document.getElementById('goal-input');
 
-    const CO2_SAVED_PER_REFUSAL = 61; // 1回あたりのCO2削減量 (g)
-    const KM_PER_GRAM_CO2 = 0.4 / 61; // 1gあたりの走行距離換算 (km)
+    // Result View Elements
+    const resultMessageLarge = document.getElementById('result-message-large');
+    const currentBar = document.getElementById('current-bar');
+    const currentCount = document.getElementById('current-count');
+    const goalBar = document.getElementById('goal-bar');
+    const goalCount = document.getElementById('goal-count');
+    const resultComment = document.getElementById('result-comment');
 
+    // Constants
+    const CO2_SAVED_PER_REFUSAL = 61;
+
+    // App State
     let totalCo2Saved = 0;
+    let refusalCount = 0;
+    let monthlyGoal = 20; // Default goal
 
-    // 1. 初期化: localStorageから累計を読み込む
-    function initializeTotal() {
-        const savedTotal = localStorage.getItem('totalCo2Saved');
-        if (savedTotal) {
-            totalCo2Saved = parseInt(savedTotal, 10);
+    // --- Functions ---
+
+    function showView(viewId) {
+        Object.values(views).forEach(view => view.classList.add('hidden'));
+        if (views[viewId]) {
+            views[viewId].classList.remove('hidden');
         }
-        updateTotalDisplay();
     }
 
-    // 累計表示を更新する関数
-    function updateTotalDisplay() {
+    function loadData() {
+        totalCo2Saved = parseInt(localStorage.getItem('totalCo2Saved') || '0', 10);
+        refusalCount = parseInt(localStorage.getItem('refusalCount') || '0', 10);
+        monthlyGoal = parseInt(localStorage.getItem('monthlyGoal') || '20', 10);
+        updateMainDisplay();
+    }
+
+    function updateMainDisplay() {
         totalCo2El.textContent = totalCo2Saved;
     }
 
-    // 「I bought one」ボタンの処理
-    boughtBtn.addEventListener('click', () => {
-        resultMessage.textContent = 'Let\'s try again next time!';
-        equivalentMessage.textContent = '';
-        resultArea.style.backgroundColor = '#fff3e0'; // Light orange background
-    });
+    function updateResultView(action) {
+        if (action === 'refused') {
+            resultMessageLarge.textContent = `${CO2_SAVED_PER_REFUSAL}g のCO2を削減！`;
+        } else {
+            resultMessageLarge.textContent = 'また次の機会に！';
+        }
 
-    // 「I refused one」ボタンの処理
-    refusedBtn.addEventListener('click', () => {
-        // 4. メッセージを表示
-        resultMessage.textContent = `You saved ${CO2_SAVED_PER_REFUSAL}g of CO2!`;
+        // Update graph
+        const currentVal = refusalCount;
+        const goalVal = monthlyGoal;
+
+        // Prevent division by zero and calculate height percentage
+        let currentHeight = 0;
+        if (goalVal > 0) {
+            currentHeight = Math.min((currentVal / goalVal) * 100, 100);
+        }
         
-        // 5. 換算結果を計算して表示
-        const equivalentKm = (CO2_SAVED_PER_REFUSAL * KM_PER_GRAM_CO2).toFixed(1);
-        equivalentMessage.textContent = `Equivalent to a ${equivalentKm}km drive.`;
+        currentBar.style.height = `${currentHeight}%`;
+        currentCount.textContent = currentVal;
+        goalBar.style.height = '100%';
+        goalCount.textContent = goalVal;
 
-        resultArea.style.backgroundColor = '#e8f5e9'; // Light green background
+        // Update comment
+        if (currentVal >= goalVal) {
+            resultComment.textContent = '素晴らしい！今月の目標を達成しました！🎉';
+        } else {
+            const remaining = goalVal - currentVal;
+            resultComment.textContent = `目標達成まであと ${remaining} 回！`;
+        }
+        showView('result-view');
+    }
 
-        // 7. 累計を更新して保存
-        totalCo2Saved += CO2_SAVED_PER_REFUSAL;
-        localStorage.setItem('totalCo2Saved', totalCo2Saved);
-        updateTotalDisplay();
+    // --- Event Listeners ---
+
+    boughtBtn.addEventListener('click', () => {
+        updateResultView('bought');
     });
 
-    // ページ読み込み時に累計を初期化
-    initializeTotal();
+    refusedBtn.addEventListener('click', () => {
+        refusalCount++;
+        totalCo2Saved += CO2_SAVED_PER_REFUSAL;
+
+        localStorage.setItem('refusalCount', refusalCount);
+        localStorage.setItem('totalCo2Saved', totalCo2Saved);
+
+        updateMainDisplay();
+        updateResultView('refused');
+    });
+
+    settingsBtn.addEventListener('click', () => {
+        goalInput.value = monthlyGoal;
+        showView('settings-view');
+    });
+
+    saveGoalBtn.addEventListener('click', () => {
+        const newGoal = parseInt(goalInput.value, 10);
+        if (newGoal && newGoal > 0) {
+            monthlyGoal = newGoal;
+            localStorage.setItem('monthlyGoal', monthlyGoal);
+            showView('main-view');
+        } else {
+            alert('有効な数値を入力してください。');
+        }
+    });
+
+    backBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const targetView = btn.getAttribute('data-target');
+            showView(targetView);
+        });
+    });
+
+    // --- Initial Load ---
+    loadData();
+    showView('main-view');
 });

@@ -11,6 +11,10 @@ body {
     text-align: center;
 }
 
+.hidden {
+    display: none;
+}
+
 .container {
     background-color: #ffffff;
     padding: 20px 40px;
@@ -18,33 +22,67 @@ body {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     max-width: 600px;
     width: 100%;
+    position: relative;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
 }
 
 h1 {
     color: #2e7d32; /* Dark Green */
-    font-size: 2rem;
+    font-size: 1.6rem; /* Adjusted size */
+    margin: 0;
+}
+
+.settings-icon {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translateY(-50%);
+    font-size: 1.8rem;
+    cursor: pointer;
+    user-select: none;
 }
 
 .question {
     font-size: 1.5rem;
     color: #4caf50; /* Green */
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+}
+
+.shopping-bag-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 20px;
 }
 
 .buttons {
     display: flex;
     justify-content: center;
     gap: 20px;
-    margin-bottom: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-button {
-    padding: 15px 30px;
+button, .back-btn {
+    padding: 12px 25px;
     border: none;
     border-radius: 8px;
     font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s, transform 0.2s;
+    min-width: 120px;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
 }
 
 #bought-btn {
@@ -57,38 +95,23 @@ button {
     transform: translateY(-2px);
 }
 
-#refused-btn {
+#refused-btn, #save-goal-btn {
     background-color: #4caf50; /* Green */
     color: white;
 }
 
-#refused-btn:hover {
+#refused-btn:hover, #save-goal-btn:hover {
     background-color: #43a047; /* Darker Green */
     transform: translateY(-2px);
 }
 
-.result-area {
-    margin: 20px 0;
-    padding: 20px;
-    border-radius: 8px;
-    min-height: 80px; /* Ensure space is reserved */
-}
-
-#result-message {
-    font-size: 2.2rem;
-    font-weight: bold;
-    color: #2e7d32;
-    margin: 0;
-}
-
-#equivalent-message {
-    font-size: 1.2rem;
-    color: #555;
-    margin-top: 10px;
+.back-btn {
+    background-color: #f0f0f0;
+    color: #333;
 }
 
 .total-saved {
-    margin-top: 30px;
+    margin-top: 20px;
     padding: 15px;
     background-color: #e8f5e9; /* Light Green */
     border-radius: 8px;
@@ -103,6 +126,83 @@ button {
 
 #total-co2 {
     font-weight: bold;
+}
+
+/* Result View Styles */
+#result-message-large {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #2e7d32;
+    margin-bottom: 20px;
+}
+
+.graph-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    height: 200px;
+    margin: 40px 0 20px; /* Increased top margin for value display */
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 10px;
+}
+
+.graph-bar-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+    height: 100%; /* Ensure wrapper takes full height */
+    position: relative; /* Set as reference for absolute positioning */
+}
+
+.bar {
+    width: 100%;
+    background-color: #4caf50; /* Changed to a more prominent green */
+    border-radius: 4px 4px 0 0;
+    transition: height 0.5s ease-out;
+    position: absolute; /* Position relative to wrapper */
+    bottom: 0; /* Align to the bottom of the wrapper */
+    left: 0;
+}
+
+#goal-bar {
+    background-color: #e0e0e0;
+}
+
+.bar-value {
+    position: absolute;
+    top: -28px; /* Position above the wrapper's top */
+    left: 50%;
+    transform: translateX(-50%);
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.graph-label {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+#result-comment {
+    font-size: 1.1rem;
+    margin: 20px 0;
+}
+
+/* Settings View Styles */
+#settings-view h2 {
+    color: #4caf50;
+}
+
+#goal-input {
+    width: 80%;
+    padding: 10px;
+    font-size: 1.2rem;
+    text-align: center;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    margin-top: 10px;
 }
 
 .explanation {
@@ -125,11 +225,11 @@ button {
     }
 
     .container {
-        padding: 20px;
+        padding: 15px;
     }
 
     h1 {
-        font-size: 1.8rem;
+        font-size: 1.4rem;
     }
 
     .question {
@@ -141,11 +241,7 @@ button {
         gap: 15px;
     }
 
-    #result-message {
-        font-size: 1.8rem;
-    }
-
-    #equivalent-message {
-        font-size: 1rem;
+    #result-message-large {
+        font-size: 1.5rem;
     }
 }

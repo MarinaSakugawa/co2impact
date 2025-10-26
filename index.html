@@ -8,28 +8,68 @@
 </head>
 <body>
     <div class="container">
+        <!-- Header -->
         <header>
-            <h1>CO2 IMPACT SIMULATOR</h1>
+            <h1>CO2インパクトシミュレーター</h1>
+            <div class="settings-icon" id="settings-btn">⚙️</div>
         </header>
-        <main>
-            <p class="question">Did you make a choice today?</p>
-            <div class="buttons">
-                <button id="bought-btn">I bought one (買った)</button>
-                <button id="refused-btn">I refused one (断った)</button>
+
+        <!-- Main View -->
+        <main id="main-view">
+            <p class="question">今日のあなたの選択は？</p>
+            <div class="shopping-bag-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="#4caf50">
+                    <path d="M20,30 L20,90 L80,90 L80,30 Z" fill="#ffffff" stroke="#4caf50" stroke-width="3"/>
+                    <path d="M35,40 C35,20 65,20 65,40" fill="none" stroke="#4caf50" stroke-width="3"/>
+                </svg>
             </div>
-            <div id="result-area" class="result-area">
-                <p id="result-message"></p>
-                <p id="equivalent-message"></p>
+            <div class="buttons">
+                <button id="bought-btn">買った</button>
+                <button id="refused-btn">買わなかった</button>
             </div>
             <div class="total-saved">
-                <p>Total CO2 Saved: <span id="total-co2">0</span>g</p>
+                <p>CO2削減量 合計: <span id="total-co2">0</span>g</p>
             </div>
-            <section class="explanation">
-                <h2>Why 61g?</h2>
-                <p>レジ袋１枚を製造・焼却する際に排出されるCO2が約61gとされています。これを削減することが、地球温暖化防止につながります。</p>
-                <p>(Source: Calculated based on industry data)</p>
-            </section>
         </main>
+
+        <!-- Result View (Initially Hidden) -->
+        <div id="result-view" class="hidden">
+            <div id="result-message-large"></div>
+            <div class="graph-container">
+                <div class="graph-bar-wrapper">
+                    <div class="graph-label">現在</div>
+                    <div class="bar" id="current-bar">
+                        <span class="bar-value" id="current-count">0</span>
+                    </div>
+                </div>
+                <div class="graph-bar-wrapper">
+                    <div class="graph-label">目標</div>
+                    <div class="bar" id="goal-bar">
+                        <span class="bar-value" id="goal-count">0</span>
+                    </div>
+                </div>
+            </div>
+            <p id="result-comment"></p>
+            <button class="back-btn" data-target="main-view">戻る</button>
+        </div>
+
+        <!-- Settings View (Initially Hidden) -->
+        <div id="settings-view" class="hidden">
+            <h2>目標設定</h2>
+            <p>1ヶ月のレジ袋削減目標（回数）を設定してください。</p>
+            <input type="number" id="goal-input" min="1" placeholder="例: 20">
+            <div class="buttons">
+                <button id="save-goal-btn">保存</button>
+                <button class="back-btn" data-target="main-view">キャンセル</button>
+            </div>
+        </div>
+
+        <!-- Explanation Section (Now outside main views) -->
+        <section class="explanation">
+            <h2>なぜ61gなの？</h2>
+            <p>レジ袋１枚を製造・焼却する際に排出されるCO2が約61gとされています。これを削減することが、地球温暖化防止につながります。</p>
+            <p>(Source: Calculated based on industry data)</p>
+        </section>
     </div>
     <script src="script.js"></script>
 </body>
