@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO2 IMPACT SIMULATOR</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>CO2 IMPACT SIMULATOR</h1>
+        </header>
+        <main>
+            <p class="question">Did you make a choice today?</p>
+            <div class="buttons">
+                <button id="bought-btn">I bought one (買った)</button>
+                <button id="refused-btn">I refused one (断った)</button>
+            </div>
+            <div id="result-area" class="result-area">
+                <p id="result-message"></p>
+                <p id="equivalent-message"></p>
+            </div>
+            <div class="total-saved">
+                <p>Total CO2 Saved: <span id="total-co2">0</span>g</p>
+            </div>
+            <section class="explanation">
+                <h2>Why 61g?</h2>
+                <p>レジ袋１枚を製造・焼却する際に排出されるCO2が約61gとされています。これを削減することが、地球温暖化防止につながります。</p>
+                <p>(Source: Calculated based on industry data)</p>
+            </section>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
