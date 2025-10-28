@@ -6,12 +6,16 @@
     <title>CO2 IMPACT SIMULATOR</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="container">
-        <!-- Header -->
         <header>
             <h1>CO2インパクトシミュレーター</h1>
-            <div class="settings-icon" id="settings-btn">⚙️</div>
+            <div class="header-icons">
+                <div class="settings-icon" id="settings-btn">⚙️</div>
+                <div class="hamburger-icon" id="hamburger-btn">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
         </header>
 
         <!-- Main View -->
@@ -37,16 +41,14 @@
             <div id="result-message-large"></div>
             <div class="graph-container">
                 <div class="graph-bar-wrapper">
-                    <div class="graph-label">現在</div>
-                    <div class="bar" id="current-bar">
-                        <span class="bar-value" id="current-count">0</span>
-                    </div>
+                    <div class="bar-value" id="bar-1-value">0</div>
+                    <div class="bar" id="bar-1"></div>
+                    <div class="graph-label" id="bar-1-label">現在</div>
                 </div>
                 <div class="graph-bar-wrapper">
-                    <div class="graph-label">目標</div>
-                    <div class="bar" id="goal-bar">
-                        <span class="bar-value" id="goal-count">0</span>
-                    </div>
+                    <div class="bar-value" id="bar-2-value">0</div>
+                    <div class="bar" id="bar-2"></div>
+                    <div class="graph-label" id="bar-2-label">目標</div>
                 </div>
             </div>
             <p id="result-comment"></p>
@@ -71,6 +73,29 @@
             <p>(Source: Calculated based on industry data)</p>
         </section>
     </div>
+
+    <!-- Modal for graph selection -->
+    <div id="modal-overlay" class="hidden">
+        <div class="modal-content">
+            <span class="close-btn" id="close-modal-btn">&times;</span>
+            <h2>比較グラフの選択</h2>
+            <div class="modal-tiles">
+                <div class="tile" data-graph-type="goal">
+                    <div class="tile-icon">📊</div>
+                    <p>現在の削減量 (目標グラフ)</p>
+                </div>
+                <div class="tile" data-graph-type="whatIf">
+                    <div class="tile-icon">🤔</div>
+                    <p>もし全部買っていたら？</p>
+                </div>
+                <div class="tile" data-graph-type="impact">
+                    <div class="tile-icon">🌳</div>
+                    <p>削減量のインパクト (近日公開)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="script.js"></script>
 </body>
 </html>

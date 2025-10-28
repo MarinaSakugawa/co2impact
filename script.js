@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsBtn = document.getElementById('settings-btn');
     const saveGoalBtn = document.getElementById('save-goal-btn');
     const backBtns = document.querySelectorAll('.back-btn');
+    const hamburgerBtn = document.getElementById('hamburger-btn');
+    const closeModalBtn = document.getElementById('close-modal-btn');
+
+    // Modal
+    const modalOverlay = document.getElementById('modal-overlay');
+    const graphTiles = document.querySelectorAll('.tile');
 
     // Data Elements
     const totalCo2El = document.getElementById('total-co2');
@@ -18,10 +24,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Result View Elements
     const resultMessageLarge = document.getElementById('result-message-large');
-    const currentBar = document.getElementById('current-bar');
-    const currentCount = document.getElementById('current-count');
-    const goalBar = document.getElementById('goal-bar');
-    const goalCount = document.getElementById('goal-count');
+    const bar1 = document.getElementById('bar-1');
+    const bar1Value = document.getElementById('bar-1-value');
+    const bar1Label = document.getElementById('bar-1-label');
+    const bar2 = document.getElementById('bar-2');
+    const bar2Value = document.getElementById('bar-2-value');
+    const bar2Label = document.getElementById('bar-2-label');
     const resultComment = document.getElementById('result-comment');
 
     // Constants
@@ -30,7 +38,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // App State
     let totalCo2Saved = 0;
     let refusalCount = 0;
+    let boughtCount = 0;
     let monthlyGoal = 20; // Default goal
+    let currentGraphType = 'goal'; // 'goal' or 'whatIf'
 
     // --- Functions ---
 
@@ -44,7 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     function loadData() {
         totalCo2Saved = parseInt(localStorage.getItem('totalCo2Saved') || '0', 10);
         refusalCount = parseInt(localStorage.getItem('refusalCount') || '0', 10);
+        boughtCount = parseInt(localStorage.getItem('boughtCount') || '0', 10);
         monthlyGoal = parseInt(localStorage.getItem('monthlyGoal') || '20', 10);
+        currentGraphType = localStorage.getItem('currentGraphType') || 'goal';
         updateMainDisplay();
     }
 
@@ -59,44 +71,72 @@ document.addEventListener('DOMContentLoaded', () => {
             resultMessageLarge.textContent = 'また次の機会に！';
         }
 
-        // Update graph
+        if (currentGraphType === 'whatIf') {
+            drawWhatIfGraph();
+        } else { // Default to 'goal'
+            drawGoalGraph();
+        }
+        showView('result-view');
+    }
+
+    function drawGoalGraph() {
         const currentVal = refusalCount;
         const goalVal = monthlyGoal;
 
-        // Prevent division by zero and calculate height percentage
-        let currentHeight = 0;
-        if (goalVal > 0) {
-            currentHeight = Math.min((currentVal / goalVal) * 100, 100);
-        }
-        
-        currentBar.style.height = `${currentHeight}%`;
-        currentCount.textContent = currentVal;
-        goalBar.style.height = '100%';
-        goalCount.textContent = goalVal;
+        let currentHeight = (goalVal > 0) ? Math.min((currentVal / goalVal) * 100, 100) : 0;
 
-        // Update comment
+        bar1.style.height = `${currentHeight}%`;
+        bar1Value.textContent = currentVal;
+        bar1Label.textContent = '現在';
+
+        bar2.style.height = '100%';
+        bar2Value.textContent = goalVal;
+        bar2Label.textContent = '目標';
+
         if (currentVal >= goalVal) {
             resultComment.textContent = '素晴らしい！今月の目標を達成しました！🎉';
         } else {
             const remaining = goalVal - currentVal;
             resultComment.textContent = `目標達成まであと ${remaining} 回！`;
         }
-        showView('result-view');
+    }
+
+    function drawWhatIfGraph() {
+        const totalActions = refusalCount + boughtCount;
+        const maxEmission = totalActions * CO2_SAVED_PER_REFUSAL;
+        const currentSavings = refusalCount * CO2_SAVED_PER_REFUSAL;
+
+        let savingsHeight = (maxEmission > 0) ? (currentSavings / maxEmission) * 100 : 0;
+
+        bar1.style.height = `${savingsHeight}%`;
+        bar1Value.textContent = `${currentSavings}g`;
+        bar1Label.textContent = '現在のあなたの選択';
+
+        bar2.style.height = '100%';
+        bar2Value.textContent = `${maxEmission}g`;
+        bar2Label.textContent = 'もし全部買っていたら';
+
+        const difference = maxEmission - currentSavings;
+        resultComment.textContent = `もし全部買っていたら、今より ${difference}g 多くのCO2が排出されていました。`;
+    }
+
+    function toggleModal(show) {
+        modalOverlay.classList.toggle('hidden', !show);
     }
 
     // --- Event Listeners ---
 
     boughtBtn.addEventListener('click', () => {
+        boughtCount++;
+        localStorage.setItem('boughtCount', boughtCount);
         updateResultView('bought');
     });
 
     refusedBtn.addEventListener('click', () => {
         refusalCount++;
         totalCo2Saved += CO2_SAVED_PER_REFUSAL;
-
         localStorage.setItem('refusalCount', refusalCount);
         localStorage.setItem('totalCo2Saved', totalCo2Saved);
-
         updateMainDisplay();
         updateResultView('refused');
     });
@@ -121,6 +161,29 @@ document.addEventListener('DOMContentLoaded', () => {
         btn.addEventListener('click', () => {
             const targetView = btn.getAttribute('data-target');
             showView(targetView);
+        });
+    });
+
+    hamburgerBtn.addEventListener('click', () => toggleModal(true));
+    closeModalBtn.addEventListener('click', () => toggleModal(false));
+    modalOverlay.addEventListener('click', (e) => {
+        if (e.target === modalOverlay) {
+            toggleModal(false);
+        }
+    });
+
+    graphTiles.forEach(tile => {
+        tile.addEventListener('click', () => {
+            const type = tile.getAttribute('data-graph-type');
+            if (type && type !== 'impact') { // 'impact' is disabled for now
+                currentGraphType = type;
+                localStorage.setItem('currentGraphType', currentGraphType);
+                toggleModal(false);
+                // If already on result view, redraw to reflect the change
+                if (!resultView.classList.contains('hidden')) {
+                    updateResultView();
+                }
+            }
         });
     });
 

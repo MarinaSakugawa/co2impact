@@ -4,51 +4,73 @@ body {
     color: #333;
     margin: 0;
     padding: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
     text-align: center;
 }
 
 .hidden {
-    display: none;
+    display: none !important; /* Ensure it's always hidden */
 }
 
 .container {
     background-color: #ffffff;
-    padding: 20px 40px;
+    padding: 20px 30px;
     border-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     max-width: 600px;
     width: 100%;
+    margin: 0 auto; /* Center the container */
     position: relative;
 }
 
 header {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end; /* Align icons to the right */
     align-items: center;
-    position: relative;
+    position: relative; /* Needed for absolute positioning of h1 */
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
     margin-bottom: 20px;
+    height: 40px; /* Give header a fixed height */
 }
 
 h1 {
-    color: #2e7d32; /* Dark Green */
-    font-size: 1.6rem; /* Adjusted size */
+    color: #2e7d32;
+    font-size: 1.4rem;
     margin: 0;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap; /* Prevent title from wrapping */
+}
+
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
 .settings-icon {
-    position: absolute;
-    top: 50%;
-    right: 0;
-    transform: translateY(-50%);
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     cursor: pointer;
     user-select: none;
+}
+
+.hamburger-icon {
+    width: 24px;
+    height: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.hamburger-icon span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background-color: #333;
+    border-radius: 3px;
 }
 
 .question {
@@ -141,7 +163,7 @@ button, .back-btn {
     justify-content: space-around;
     align-items: flex-end;
     height: 200px;
-    margin: 40px 0 20px; /* Increased top margin for value display */
+    margin: 40px 0 40px; /* Adjusted margin */
     border-bottom: 2px solid #ccc;
     padding-bottom: 10px;
 }
@@ -151,27 +173,30 @@ button, .back-btn {
     flex-direction: column;
     align-items: center;
     width: 40%;
-    height: 100%; /* Ensure wrapper takes full height */
-    position: relative; /* Set as reference for absolute positioning */
+    height: 100%;
+    position: relative;
 }
 
 .bar {
-    width: 100%;
-    background-color: #4caf50; /* Changed to a more prominent green */
+    width: 80%; /* Make bars slightly thinner */
     border-radius: 4px 4px 0 0;
     transition: height 0.5s ease-out;
-    position: absolute; /* Position relative to wrapper */
-    bottom: 0; /* Align to the bottom of the wrapper */
-    left: 0;
+    position: absolute;
+    bottom: 0;
+    left: 10%;
 }
 
-#goal-bar {
+#bar-1 {
+    background-color: #4caf50;
+}
+
+#bar-2 {
     background-color: #e0e0e0;
 }
 
 .bar-value {
     position: absolute;
-    top: -28px; /* Position above the wrapper's top */
+    top: -28px;
     left: 50%;
     transform: translateX(-50%);
     font-weight: bold;
@@ -180,7 +205,10 @@ button, .back-btn {
 }
 
 .graph-label {
-    margin-top: 8px;
+    position: absolute;
+    bottom: -35px; /* Adjusted position */
+    width: 100%;
+    text-align: center;
     font-size: 0.9rem;
     color: #555;
 }
@@ -188,6 +216,11 @@ button, .back-btn {
 #result-comment {
     font-size: 1.1rem;
     margin: 20px 0;
+    min-height: 40px; /* Reserve space for comment */
+}
+
+.back-btn {
+    margin-top: 20px; /* Add margin to separate from content */
 }
 
 /* Settings View Styles */
@@ -203,6 +236,71 @@ button, .back-btn {
     border: 2px solid #ccc;
     border-radius: 8px;
     margin-top: 10px;
+}
+
+/* Modal Styles */
+#modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+    position: relative;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 2rem;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.modal-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.tile {
+    width: 120px;
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+.tile:hover {
+    background-color: #f0f4f0;
+    border-color: #4caf50;
+}
+
+.tile-icon {
+    font-size: 2.5rem;
+}
+
+.tile p {
+    margin: 10px 0 0;
+    font-size: 0.9rem;
+    font-weight: bold;
 }
 
 .explanation {
@@ -221,15 +319,31 @@ button, .back-btn {
 /* Responsive Design */
 @media (max-width: 600px) {
     body {
-        padding: 10px;
+        padding: 0;
     }
 
     .container {
-        padding: 15px;
+        padding: 20px 15px;
+        border-radius: 0;
+        min-height: 100vh;
+        box-shadow: none;
     }
 
     h1 {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
+    }
+
+    .header-icons {
+        gap: 15px;
+    }
+
+    .settings-icon {
+        font-size: 1.5rem;
+    }
+
+    .hamburger-icon {
+        width: 22px;
+        height: 18px;
     }
 
     .question {
