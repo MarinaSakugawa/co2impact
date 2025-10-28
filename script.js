@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backBtns = document.querySelectorAll('.back-btn');
     const hamburgerBtn = document.getElementById('hamburger-btn');
     const closeModalBtn = document.getElementById('close-modal-btn');
+    const resetDataBtn = document.getElementById('reset-data-btn');
 
     // Modal
     const modalOverlay = document.getElementById('modal-overlay');
@@ -20,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Data Elements
     const totalCo2El = document.getElementById('total-co2');
+    const refusalCountEl = document.getElementById('refusal-count');
+    const boughtCountEl = document.getElementById('bought-count');
     const goalInput = document.getElementById('goal-input');
 
     // Result View Elements
@@ -62,18 +65,25 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateMainDisplay() {
         totalCo2El.textContent = totalCo2Saved;
+        refusalCountEl.textContent = refusalCount;
+        boughtCountEl.textContent = boughtCount;
     }
 
     function updateResultView(action) {
+        // Only update the message if an action is explicitly provided
         if (action === 'refused') {
             resultMessageLarge.textContent = `${CO2_SAVED_PER_REFUSAL}g のCO2を削減！`;
-        } else {
+        } else if (action === 'bought') {
             resultMessageLarge.textContent = 'また次の機会に！';
         }
+        // If no action is provided (e.g., just switching graph types), keep the existing message or clear it if it's the initial load.
 
         if (currentGraphType === 'whatIf') {
             drawWhatIfGraph();
-        } else { // Default to 'goal'
+        } else if (currentGraphType === 'impact') {
+            drawImpactGraph(); // Placeholder for future implementation
+        }
+        else { // Default to 'goal'
             drawGoalGraph();
         }
         showView('result-view');
@@ -88,10 +98,12 @@ document.addEventListener('DOMContentLoaded', () => {
         bar1.style.height = `${currentHeight}%`;
         bar1Value.textContent = currentVal;
         bar1Label.textContent = '現在';
+        bar1.style.backgroundColor = '#4caf50'; // Reset to green
 
         bar2.style.height = '100%';
         bar2Value.textContent = goalVal;
         bar2Label.textContent = '目標';
+        bar2.style.backgroundColor = '#e0e0e0'; // Reset to grey
 
         if (currentVal >= goalVal) {
             resultComment.textContent = '素晴らしい！今月の目標を達成しました！🎉';
@@ -103,25 +115,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function drawWhatIfGraph() {
         const totalActions = refusalCount + boughtCount;
-        const maxEmission = totalActions * CO2_SAVED_PER_REFUSAL;
-        const currentSavings = refusalCount * CO2_SAVED_PER_REFUSAL;
+        const potentialEmissions = totalActions * CO2_SAVED_PER_REFUSAL;
+        const actualEmissions = boughtCount * CO2_SAVED_PER_REFUSAL;
+        const savedAmount = refusalCount * CO2_SAVED_PER_REFUSAL;
 
-        let savingsHeight = (maxEmission > 0) ? (currentSavings / maxEmission) * 100 : 0;
+        let actualEmissionHeight = (potentialEmissions > 0) ? (actualEmissions / potentialEmissions) * 100 : 0;
 
-        bar1.style.height = `${savingsHeight}%`;
-        bar1Value.textContent = `${currentSavings}g`;
-        bar1Label.textContent = '現在のあなたの選択';
+        // Bar 1: Actual Emissions
+        bar1.style.height = `${actualEmissionHeight}%`;
+        bar1Value.textContent = `${actualEmissions}g`;
+        bar1Label.textContent = 'あなたの選択による排出量';
+        bar1.style.backgroundColor = '#f44336'; // Use red for emissions
 
+        // Bar 2: Potential Emissions
         bar2.style.height = '100%';
-        bar2Value.textContent = `${maxEmission}g`;
-        bar2Label.textContent = 'もし全部買っていたら';
+        bar2Value.textContent = `${potentialEmissions}g`;
+        bar2Label.textContent = 'もし全部買っていた場合';
+        bar2.style.backgroundColor = '#e0e0e0'; // Keep grey for potential
 
-        const difference = maxEmission - currentSavings;
-        resultComment.textContent = `もし全部買っていたら、今より ${difference}g 多くのCO2が排出されていました。`;
+        // Update comment to focus on savings
+        if (savedAmount > 0) {
+            resultComment.textContent = `あなたの選択によって、${savedAmount}g のCO2を削減できました。素晴らしいです！`;
+        } else {
+            resultComment.textContent = 'レジ袋を断ると、CO2排出量を削減できます。';
+        }
+    }
+
+    function drawImpactGraph() {
+        const CO2_PER_TREE_YEAR = 22000; // grams of CO2 absorbed by one tree per year
+        const CO2_PER_KM_DRIVEN = 120; // grams of CO2 emitted per km driven by a car
+
+        const equivalentTrees = (totalCo2Saved / CO2_PER_TREE_YEAR).toFixed(2);
+        const equivalentKm = (totalCo2Saved / CO2_PER_KM_DRIVEN).toFixed(2);
+
+        bar1.style.height = '0%'; // Reset for this graph type
+        bar1Value.textContent = '';
+        bar1Label.textContent = '';
+        bar1.style.backgroundColor = '#4caf50'; // Reset to green
+
+        bar2.style.height = '0%'; // Reset for this graph type
+        bar2Value.textContent = '';
+        bar2Label.textContent = '';
+        bar2.style.backgroundColor = '#e0e0e0'; // Reset to grey
+
+        resultMessageLarge.textContent = 'あなたの削減インパクト';
+        resultComment.innerHTML = `
+            <p>これまでに削減したCO2は、</p>
+            <p>年間約 <strong>${equivalentTrees} 本</strong> の木が吸収するCO2に相当します。</p>
+            <p>または、車で約 <strong>${equivalentKm} km</strong> 走行した際のCO2排出量に相当します。</p>
+        `;
     }
 
     function toggleModal(show) {
         modalOverlay.classList.toggle('hidden', !show);
+    }
+
+    function resetData() {
+        if (confirm('全てのデータをリセットしてもよろしいですか？この操作は元に戻せません。')) {
+            localStorage.clear();
+            totalCo2Saved = 0;
+            refusalCount = 0;
+            boughtCount = 0;
+            monthlyGoal = 20; // Reset to default
+            currentGraphType = 'goal'; // Reset to default
+            updateMainDisplay();
+            showView('main-view');
+            alert('データがリセットされました。');
+        }
     }
 
     // --- Event Listeners ---
@@ -175,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
     graphTiles.forEach(tile => {
         tile.addEventListener('click', () => {
             const type = tile.getAttribute('data-graph-type');
-            if (type && type !== 'impact') { // 'impact' is disabled for now
+            if (type) { // 'impact' is now enabled
                 currentGraphType = type;
                 localStorage.setItem('currentGraphType', currentGraphType);
                 toggleModal(false);
@@ -186,6 +246,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    resetDataBtn.addEventListener('click', resetData);
 
     // --- Initial Load ---
     loadData();

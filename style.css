@@ -132,6 +132,17 @@ button, .back-btn {
     color: #333;
 }
 
+.danger-btn {
+    background-color: #f44336; /* Red */
+    color: white;
+    margin-top: 20px; /* Add some space above it */
+}
+
+.danger-btn:hover {
+    background-color: #d32f2f; /* Darker Red */
+    transform: translateY(-2px);
+}
+
 .total-saved {
     margin-top: 20px;
     padding: 15px;
