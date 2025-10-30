@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultComment = document.getElementById('result-comment');
 
     // Constants
-    const CO2_SAVED_PER_REFUSAL = 61;
+    const CO2_SAVED_PER_REFUSAL = 1.2;
 
     // App State
     let totalCo2Saved = 0;
