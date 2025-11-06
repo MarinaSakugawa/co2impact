@@ -70,9 +70,8 @@ body {
     box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
-/* Initially hide the plastic bag app */
+/* Styles for the plastic bag app container */
 #plastic-bag-app-container {
-    display: none;
     padding: 20px;
 }
 
