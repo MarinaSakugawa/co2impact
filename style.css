@@ -3,7 +3,7 @@ body {
     background-color: #f0f4f0;
     color: #333;
     margin: 0;
-    padding: 20px;
+    padding: 0; /* Changed from 20px to 0 */
     text-align: center;
 }
 
@@ -11,6 +11,73 @@ body {
     display: none !important; /* Ensure it's always hidden */
 }
 
+/* Top Screen Styles */
+#top-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between; /* Changed from center */
+    min-height: 100vh;
+    background: linear-gradient(135deg, #66bb6a, #26a69a); /* Green to Blue-Green gradient */
+    padding: 40px 20px; /* Increased top/bottom padding */
+    box-sizing: border-box;
+}
+
+.top-title {
+    color: white;
+    font-size: 2.5rem;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    margin-top: 20px; /* Added margin-top */
+    margin-bottom: 0; /* Removed margin-bottom */
+    position: static; /* Override generic h1 style */
+    transform: none; /* Override generic h1 style */
+}
+
+.top-illustration {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    flex-grow: 1; /* Allow illustration to take up space */
+    object-fit: contain; /* Ensure image scales nicely */
+    margin: 20px 0;
+}
+
+.top-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.top-buttons button {
+    background-color: white;
+    color: #333;
+    border: none;
+    border-radius: 15px;
+    padding: 15px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.top-buttons button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+/* Initially hide the plastic bag app */
+#plastic-bag-app-container {
+    display: none;
+    padding: 20px;
+}
+
+
+/* Existing App Styles */
 .container {
     background-color: #ffffff;
     padding: 20px 30px;
@@ -24,16 +91,23 @@ body {
 
 header {
     display: flex;
-    justify-content: flex-end; /* Align icons to the right */
+    justify-content: space-between; /* Changed from flex-end */
     align-items: center;
-    position: relative; /* Needed for absolute positioning of h1 */
+    position: relative;
     padding-bottom: 10px;
     border-bottom: 1px solid #eee;
     margin-bottom: 20px;
     height: 40px; /* Give header a fixed height */
 }
 
-h1 {
+#back-to-top-btn {
+    position: static; /* Remove absolute positioning if any */
+    transform: none;
+    left: 0;
+    top: 0;
+}
+
+header h1 {
     color: #2e7d32;
     font-size: 1.4rem;
     margin: 0;
@@ -333,7 +407,7 @@ button, .back-btn {
         padding: 0;
     }
 
-    .container {
+    #plastic-bag-app-container, .container {
         padding: 20px 15px;
         border-radius: 0;
         min-height: 100vh;

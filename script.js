@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Screens
+    const topScreen = document.getElementById('top-screen');
+    const plasticBagApp = document.getElementById('plastic-bag-app-container');
+
     // Views
     const mainView = document.getElementById('main-view');
     const resultView = document.getElementById('result-view');
@@ -6,6 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const views = { 'main-view': mainView, 'result-view': resultView, 'settings-view': settingsView };
 
     // Buttons
+    const btnPlasticBag = document.getElementById('btn-plastic-bag');
+    const backToTopBtn = document.getElementById('back-to-top-btn');
     const boughtBtn = document.getElementById('bought-btn');
     const refusedBtn = document.getElementById('refused-btn');
     const settingsBtn = document.getElementById('settings-btn');
@@ -186,6 +192,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
 
+    // Screen navigation
+    btnPlasticBag.addEventListener('click', () => {
+        topScreen.style.display = 'none';
+        plasticBagApp.style.display = 'block';
+        showView('main-view'); // Show the main view of the plastic bag app
+    });
+
+    backToTopBtn.addEventListener('click', () => {
+        plasticBagApp.style.display = 'none';
+        topScreen.style.display = 'flex';
+    });
+
     boughtBtn.addEventListener('click', () => {
         boughtCount++;
         localStorage.setItem('boughtCount', boughtCount);
@@ -220,7 +238,9 @@ document.addEventListener('DOMContentLoaded', () => {
     backBtns.forEach(btn => {
         btn.addEventListener('click', () => {
             const targetView = btn.getAttribute('data-target');
-            showView(targetView);
+            if (targetView) { // Ensure the button has a target
+                showView(targetView);
+            }
         });
     });
 
@@ -251,5 +271,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial Load ---
     loadData();
-    showView('main-view');
+    // showView('main-view'); // Initially show the top screen, not the main view of the app
 });
