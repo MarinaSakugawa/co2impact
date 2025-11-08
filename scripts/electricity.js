@@ -1,8 +1,8 @@
 // 電力ページに関するスクリプトを実装
 
 function initializeElectricityApp() {
-    // 沖縄電力の事業者全体のCO2排出係数を参考2024年版
-    const CO2_FACTOR = 0.677;
+    // 沖縄電力の事業者全体のCO2排出係数を参考2024年版（g-CO2 per kWh）
+    const CO2_FACTOR = 677;
 
     // 各月のデータを取得する
     const monthInputs = [];
@@ -31,7 +31,11 @@ function initializeElectricityApp() {
     // データをローカルストレージに保存する
     function saveData() {
         const data = monthInputs.map(input => parseFloat(input.value) || 0);
+        const totalKwh = data.reduce((sum, val) => sum + val, 0);
+        const totalCo2Grams = totalKwh * CO2_FACTOR; // g
+
         localStorage.setItem('electricityData', JSON.stringify(data));
+        localStorage.setItem('electricityTotal', totalCo2Grams.toFixed(1)); // CO2排出量をg単位で保存
         alert('データを保存しました！');
     }
 
@@ -39,12 +43,15 @@ function initializeElectricityApp() {
     function updateSummary() {
         const data = monthInputs.map(input => parseFloat(input.value) || 0);
         const totalKwh = data.reduce((sum, val) => sum + val, 0);
-        const totalCo2 = totalKwh * CO2_FACTOR;
+        const totalCo2Grams = totalKwh * CO2_FACTOR; // g
 
         totalKwhEl.textContent = totalKwh.toFixed(1);
         if (totalCo2KgEl) {
-            totalCo2KgEl.textContent = totalCo2.toFixed(1);
+            totalCo2KgEl.textContent = totalCo2Grams.toFixed(1);
         }
+
+        // CO2排出量をlocalStorageにg単位で保存（リアルタイム更新）
+        localStorage.setItem('electricityTotal', totalCo2Grams.toFixed(1));
     }
 
     // チャートを更新する
@@ -112,7 +119,7 @@ function initializeElectricityApp() {
             data: {
                 labels: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
                 datasets: [{
-                    label: 'CO2排出量 (kg)',
+                    label: 'CO2排出量 (g)',
                     data: co2Data,
                     borderColor: '#f44336',
                     backgroundColor: 'rgba(244, 67, 54, 0.1)',
