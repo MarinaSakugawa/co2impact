@@ -1,0 +1,80 @@
+<div id="electricity-app">
+    <div class="electricity-header">
+        <button id="electricity-back-btn" class="back-btn">← トップに戻る</button>
+        <h2>電力使用量とCO2排出量</h2>
+    </div>
+
+    <div class="electricity-container">
+        <!-- 左側：データ入力エリア -->
+        <div class="electricity-input-section">
+            <h3>月別電気使用量 (kWh)</h3>
+            <div class="electricity-form">
+                <div class="month-input-group">
+                    <label for="month-1">1月</label>
+                    <input type="number" id="month-1" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-2">2月</label>
+                    <input type="number" id="month-2" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-3">3月</label>
+                    <input type="number" id="month-3" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-4">4月</label>
+                    <input type="number" id="month-4" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-5">5月</label>
+                    <input type="number" id="month-5" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-6">6月</label>
+                    <input type="number" id="month-6" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-7">7月</label>
+                    <input type="number" id="month-7" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-8">8月</label>
+                    <input type="number" id="month-8" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-9">9月</label>
+                    <input type="number" id="month-9" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-10">10月</label>
+                    <input type="number" id="month-10" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-11">11月</label>
+                    <input type="number" id="month-11" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+                <div class="month-input-group">
+                    <label for="month-12">12月</label>
+                    <input type="number" id="month-12" class="month-input" min="0" step="0.1" placeholder="0">
+                </div>
+            </div>
+
+            <div class="electricity-summary">
+                <h4>年間サマリー</h4>
+                <p>年間電力使用量: <span id="total-kwh">0</span> kWh</p>
+                <p>年間CO2排出量: <span id="total-co2-kg">0</span> kg</p>
+            </div>
+
+            <button id="save-electricity-data-btn" class="save-btn">データを保存</button>
+        </div>
+
+        <!-- 右側：グラフ表示エリア -->
+        <div class="electricity-chart-section">
+            <h3>電力使用量グラフ</h3>
+            <canvas id="electricity-chart"></canvas>
+
+            <h3 style="margin-top: 30px; color: #f44336;">CO2排出量グラフ</h3>
+            <canvas id="co2-chart"></canvas>
+        </div>
+    </div>
+</div>
