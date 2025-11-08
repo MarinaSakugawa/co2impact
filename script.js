@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // After loading the component, initialize its specific logic
             if (componentName === 'plastic_bag_app') {
                 initializePlasticBagApp();
+            } else if (componentName === 'electricity_app') {
+                initializeElectricityApp();
             }
         } catch (error) {
             console.error('Failed to load component:', error);
@@ -29,7 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
             loadComponent('plastic_bag_app');
         }
 
-        if (targetId === 'back-to-top-btn') {
+        if (targetId === 'btn-electricity') {
+            loadComponent('electricity_app');
+        }
+
+        if (targetId === 'back-to-top-btn' || targetId === 'electricity-back-btn') {
             loadComponent('top_screen');
         }
     });
