@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 initializePlasticBagApp();
             } else if (componentName === 'electricity_app') {
                 initializeElectricityApp();
+            } else if (componentName === 'top_screen') {
+                updateTopScreenSummary();
             }
         } catch (error) {
             console.error('Failed to load component:', error);
@@ -104,6 +106,11 @@ document.addEventListener('DOMContentLoaded', () => {
             boughtCount = parseInt(localStorage.getItem('boughtCount') || '0', 10);
             monthlyGoal = parseInt(localStorage.getItem('monthlyGoal') || '20', 10);
             currentGraphType = localStorage.getItem('currentGraphType') || 'goal';
+
+            // レジ袋のCO2合計を計算して保存
+            const plasticBagCo2 = ((boughtCount - refusalCount) * CO2_SAVED_PER_REFUSAL); // g to kg
+            localStorage.setItem('plasticBagTotal', plasticBagCo2.toFixed(3));
+
             updateMainDisplay();
         }
 
@@ -218,9 +225,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // --- Event Listeners (need to be attached to elements within the loaded component) ---
 
+        // レジ袋のCO2を計算してlocalStorageに保存する関数
+        function updatePlasticBagTotal() {
+            // 買った分は排出、断った分は削減
+            const plasticBagCo2 = ((boughtCount - refusalCount) * CO2_SAVED_PER_REFUSAL);
+            localStorage.setItem('plasticBagTotal', plasticBagCo2.toFixed(3));
+        }
+
         boughtBtn.addEventListener('click', () => {
             boughtCount++;
             localStorage.setItem('boughtCount', boughtCount);
+            updatePlasticBagTotal(); // CO2計算を更新
             updateResultView('bought');
         });
 
@@ -229,6 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
             totalCo2Saved += CO2_SAVED_PER_REFUSAL;
             localStorage.setItem('refusalCount', refusalCount);
             localStorage.setItem('totalCo2Saved', totalCo2Saved);
+            updatePlasticBagTotal(); // CO2計算を更新
             updateMainDisplay();
             updateResultView('refused');
         });
@@ -285,6 +301,22 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- Initial Load for this component ---
         loadData();
         showView('main-view');
+    }
+
+    // --- Top Screen Summary Logic ---
+    function updateTopScreenSummary() {
+        // 電力データの取得（保存済みのCO2排出量を使用）g単位
+        const electricityCo2 = parseFloat(localStorage.getItem('electricityTotal') || '0') || 0;
+
+        // レジ袋データの取得（保存済みのCO2排出量を使用）g単位
+        const plasticBagCo2 = parseFloat(localStorage.getItem('plasticBagTotal') || '0') || 0;
+
+        // 全体のCO2排出量（g単位）
+        const totalCo2 = electricityCo2 + plasticBagCo2;
+
+        // HTMLに表示（g単位）
+        const totalCo2El = document.getElementById('total-co2');
+        if (totalCo2El) totalCo2El.textContent = totalCo2.toFixed(1);
     }
 
     // --- Initial App Load ---

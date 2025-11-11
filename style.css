@@ -70,6 +70,71 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
 }
 
+/* Greenhouse Gas Summary Styles */
+.greenhouse-summary {
+  width: 100%;
+  max-width: 400px;
+  margin: 15px 0;
+}
+
+.summary-total {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 20px 25px;
+  border-radius: 15px;
+  background-color: rgba(255, 255, 255, 0.95);
+  color: #333;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+
+.summary-total:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.summary-icon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.summary-content {
+  flex: 1;
+  text-align: left;
+}
+
+.summary-label {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.summary-value-large {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #2e7d32;
+}
+
+@media (max-width: 600px) {
+  .greenhouse-summary {
+    max-width: 90%;
+  }
+
+  .summary-total {
+    padding: 15px 20px;
+  }
+
+  .summary-icon {
+    font-size: 2rem;
+  }
+
+  .summary-value-large {
+    font-size: 1.6rem;
+  }
+}
+
 /* Styles for the plastic bag app container */
 #plastic-bag-app-container {
   padding: 20px;
