@@ -44,6 +44,22 @@ body {
   margin: 20px 0;
 }
 
+/* カテゴリー選択の説明 */
+.category-description {
+  width: 100%;
+  max-width: 400px;
+  margin: 20px 0 10px;
+  text-align: center;
+}
+
+.category-description p {
+  color: white;
+  font-size: 1rem;
+  font-weight: 500;
+  margin: 0;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+}
+
 .top-buttons {
   display: grid;
   grid-template-columns: 1fr 1fr;
