@@ -314,9 +314,17 @@ document.addEventListener('DOMContentLoaded', () => {
         // 全体のCO2排出量（g単位）
         const totalCo2 = electricityCo2 + plasticBagCo2;
 
+        // 削減できた量の計算（g単位）
+        const CO2_SAVED_PER_REFUSAL = 1.2;
+        const refusalCount = parseInt(localStorage.getItem('refusalCount') || '0', 10);
+        const totalReduction = refusalCount * CO2_SAVED_PER_REFUSAL;
+
         // HTMLに表示（g単位）
         const totalCo2El = document.getElementById('total-co2');
         if (totalCo2El) totalCo2El.textContent = totalCo2.toFixed(1);
+
+        const totalReductionEl = document.getElementById('total-reduction');
+        if (totalReductionEl) totalReductionEl.textContent = totalReduction.toFixed(1);
     }
 
     // --- Initial App Load ---
